@@ -20,7 +20,7 @@ Validates the successful single bet placement flow through the UI.
 
 ### API Test
 
-Validates that the API rejects an invalid betting selection.
+Validates that the API Handles boundary tests.
 
 ## Install Dependencies
 

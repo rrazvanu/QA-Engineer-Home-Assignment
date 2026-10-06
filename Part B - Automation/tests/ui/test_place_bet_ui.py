@@ -1,7 +1,5 @@
 from datetime import datetime
-
 import allure
-
 from api.api_requests import APIRequests
 from pages.sporting_betting_page import SportingBettingPage
 

@@ -70,7 +70,7 @@ The execution also included targeted exploratory checks around the bet placement
 | **Expected Result**    | The receipt displays the same home team vs away team order as shown before placement.                                                                         |
 | **Actual Result**      | The home and away teams are displayed in reversed order in the receipt.                                                                                       |
 | **Business Impact**    | The bet receipt contains incorrect match information, which can cause users to misunderstand which teams they bet on and undermines transaction transparency. |
-| **Evidence**           | Screenshot not available due to negative balance.                                                                                                             |
+| **Evidence**           | BUG-004                                                                                                                                                       |
 
 ### BUG-006 - Balance Not Updated After Successful Bet
 
@@ -81,4 +81,26 @@ The execution also included targeted exploratory checks around the bet placement
 | **Expected Result**    | The available balance is reduced by exactly the stake amount.                                                                                                              |
 | **Actual Result**      | The balance is not updated after the successful bet.                                                                                                                       |
 | **Business Impact**    | The displayed account balance does not reflect the user's actual financial state, potentially allowing incorrect subsequent betting and causing financial inconsistencies. |
-| **Evidence**           | Screenshot not available due to negative balance.                                                                                                                          |
+| **Evidence**           | BUG-006                                                                                                                                                                    |
+
+### BUG-007 - API Returns Incorrect Currency for Successful Bet
+
+| Field                  | Details                                                                                                                                                        |
+|------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Severity**           | High                                                                                                                                                           |
+| **Reproduction Steps** | 1. Reset the user balance.<br>2. Place a valid bet using `POST /api/place-bet`.<br>3. Review the `currency` field in the response.                             |
+| **Expected Result**    | The API response returns `EUR` as the currency.                                                                                                                |
+| **Actual Result**      | The API response returns `USD` as the currency.                                                                                                                |
+| **Business Impact**    | The API reports monetary values in the wrong currency, potentially causing incorrect interpretation of stake, payout, and balance values by consuming systems. |
+| **Evidence**           | BUG-007                                                                                                                                                        |
+
+### BUG-008 - API Returns Incorrect Payout for Decimal Stake
+
+| Field                  | Details                                                                                                                                                                                                |
+|------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Severity**           | High                                                                                                                                                                                                   |
+| **Reproduction Steps** | 1. Reset the user balance.<br>2. Retrieve a valid upcoming match.<br>3. Place a valid bet with a stake of `1.01`.<br>4. Compare the API `payout` with the expected value calculated as `stake × odds`. |
+| **Expected Result**    | The API returns the payout calculated as `stake × odds`, rounded to 2 decimal places.                                                                                                                  |
+| **Actual Result**      | The API returns a payout of `3.68`, while the expected payout is `3.69`.                                                                                                                               |
+| **Business Impact**    | An incorrect payout can result in users being shown or credited with an incorrect monetary amount, creating financial inconsistencies.                                                                 |
+| **Evidence**           | Automated API test fails with: `Expected payout 3.69 but got 3.68`.                                                                                                                                    |

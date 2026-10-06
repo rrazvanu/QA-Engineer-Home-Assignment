@@ -15,7 +15,7 @@ class APIRequests:
         response.raise_for_status()
         return response.json()
 
-    # request for retrieving upcoming matches only
+    # request for retrieving one upcoming match
     def get_upcoming_match(self):
         matches = self.get_matches()
         today = date.today()
@@ -34,6 +34,7 @@ class APIRequests:
             key=lambda match: date.fromisoformat(match["kickoffDate"])
         )
 
+    # reset user balance request
     def reset_balance(self):
         response = requests.post(
             f"{API_BASE_URL}/reset-balance",
@@ -42,6 +43,7 @@ class APIRequests:
         response.raise_for_status()
         return response.json()
 
+    # get user balance request
     def get_balance(self):
         response = requests.get(
             f"{API_BASE_URL}/balance",
@@ -50,6 +52,7 @@ class APIRequests:
         response.raise_for_status()
         return response.json()
 
+    # place bet request
     def place_bet(self, match_id, selection, stake):
         response = requests.post(
             f"{API_BASE_URL}/place-bet",
